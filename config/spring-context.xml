@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<bean id="heartCenterServer" class="com.carkey.heart.JettyEmbedServer">
+		<property name="server">
+			<bean class="org.eclipse.jetty.server.Server">
+				<property name="connectors">
+					<list>
+						<bean class="org.eclipse.jetty.server.nio.SelectChannelConnector">
+							<property name="maxIdleTime" value="30000" />
+							<property name="requestHeaderSize" value="8192" />
+							<property name="port" value="${jetty.port}" />
+							<property name="threadPool">
+								<bean class="org.eclipse.jetty.util.thread.QueuedThreadPool">
+									<property name="maxThreads" value="20" />
+									<property name="name" value="jetty-soa-heart-center" />
+								</bean>
+							</property>
+						</bean>
+					</list>
+				</property>
+				<property name="handler">
+					<bean class="org.eclipse.jetty.webapp.WebAppContext">
+						<!-- webapp path -->
+						<constructor-arg index="0" value="${jetty.webapp}" />
+						<!-- context path -->
+						<constructor-arg index="1" value="/" />
+					</bean>
+				</property>
+			</bean>
+		</property>
+		<!-- servlets path = servlet --> 
+		<property name="servlets">
+			<map>
+				<entry key="/heart">
+					<bean class="com.carkey.heart.servlet.HeartServlet">
+						<property name="heartCore" ref="heartCore" />
+					</bean>
+				</entry>
+				<entry key="/blackList">
+					<bean class="com.carkey.heart.servlet.BlackListServlet">
+						<property name="heartCore" ref="heartCore" />
+					</bean>
+				</entry>
+				<entry key="/removeBlackList">
+					<bean class="com.carkey.heart.servlet.RemoveBlackHostsServlet">
+						<property name="heartCore" ref="heartCore" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+		<property name="heartCore" ref="heartCore" />
+		<property name="centerClient" ref="centerClient" />
+		<property name="dynamicConfName" value="heartCenterDynamic.properties" />
+	</bean>
+	
+	<bean id="heartCore" class="com.carkey.heart.core.HeartCore">	
+		<property name="redisClient" ref="redisClient" />
+		<property name="pubRedisService" ref="pubRedisService"/>
+		<property name="ListenerContainer" ref="topicContainer"/>
+	</bean>
+	<bean id="centerClient" class="com.carkey.heart.register.CenterClient">
+		<property name = "spacename" value ="${heartcenter.cluster.name}"/>
+		<property name = "registerUrl" value ="${heartcenter.zk.url}"/>
+	</bean>
+</beans>

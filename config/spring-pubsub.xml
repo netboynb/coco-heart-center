@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+        <!-- SDR Pub/Sub配置 -->
+
+        <bean id="topicName" class="java.lang.String">
+                  <constructor-arg value="${redis.heartPubSub}"/>
+        </bean>
+
+        <bean id="pubRedisService" class="com.carkey.heart.redis.pubsub.PubRedisService">
+                <property name="stringRedisTemplate" ref="redisCoreTemplate" />
+                <property name="channelTopic" ref="topicName" />
+        </bean>
+
+        <bean id="channelTopic" class="org.springframework.data.redis.listener.ChannelTopic">
+                <constructor-arg ref="topicName" />
+        </bean>
+
+        <bean id="subRedisMsgListener" class="com.carkey.heart.redis.pubsub.SubRedisMsgListener">
+                <property name="channelTopic" ref="channelTopic" />
+        </bean>
+
+        <bean id="topicContainer" class="org.springframework.data.redis.listener.RedisMessageListenerContainer" destroy-method="destroy">
+                <property name="connectionFactory" ref="jedisConnFactory" />
+                <property name="messageListeners">
+                        <map>
+                                <entry key-ref="subRedisMsgListener">
+                                        <ref bean="channelTopic" />
+                                </entry>
+                        </map>
+                </property>
+        </bean>
+</beans>
