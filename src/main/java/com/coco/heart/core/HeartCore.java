@@ -9,6 +9,7 @@ import javax.management.RuntimeErrorException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 
 import com.coco.heart.common.ThreadPoolHolder;
@@ -28,11 +29,14 @@ import com.google.common.collect.Maps;
 public class HeartCore {
     private static final Logger LOGGER = LoggerFactory.getLogger(HeartCore.class);
     private Map<String, PingEntry> blackHostMap = Maps.newConcurrentMap();
+    @Autowired
     private RedisClient redisClient;
+    @Autowired
     private PubRedisService pubRedisService;
+    @Autowired
     private RedisMessageListenerContainer ListenerContainer;
 
-    public void start() {
+    public void init() {
         check();
         redisClient.setBlackHostsMap(blackHostMap);
         redisClient.start();
@@ -52,7 +56,7 @@ public class HeartCore {
 
     /**
      * 
-     * TODO: load pingEntry info into check list
+     * load pingEntry info into check list
      *
      * @param pingEntry
      */
@@ -79,7 +83,7 @@ public class HeartCore {
 
     /**
      * 
-     * TODO: fetch the black hosts list
+     * fetch the black hosts list
      *
      * @return
      */
@@ -90,7 +94,7 @@ public class HeartCore {
 
     /**
      * 
-     * TODO: remove the specify list,then fetch the result list
+     * remove the specify list,then fetch the result list
      *
      * @param removeList
      * @return

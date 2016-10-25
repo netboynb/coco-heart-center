@@ -25,9 +25,15 @@
     <netty.version>4.1.2.Final</netty.version>
     <curator.version>2.10.0</curator.version>
     <CocoUtils.version>0.0.1-SNAPSHOT</CocoUtils.version>
+    <httpclient.version>4.5.1</httpclient.version>
   </properties>
 
   <dependencies>
+	<dependency>
+		<groupId>org.apache.httpcomponents</groupId>
+		<artifactId>httpclient</artifactId>
+		<version>${httpclient.version}</version>
+	</dependency>
     <dependency>
       <groupId>com.coco.utils</groupId>
       <artifactId>CocoUtils</artifactId>
@@ -83,6 +89,12 @@
 	  <groupId>com.ms.coco</groupId>
 	  <artifactId>coco-registry</artifactId>
 	  <version>${coco-registry.version}</version>
+      <exclusions>
+        <exclusion>
+              <groupId>org.apache.httpcomponents</groupId>
+              <artifactId>httpclient</artifactId>
+        </exclusion>
+      </exclusions>
 	</dependency>
 
     <dependency>

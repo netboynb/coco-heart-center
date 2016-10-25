@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import com.coco.heart.common.RegisterHolder;
 import com.coco.heart.common.Utils;
 import com.coco.heart.entry.PingEntry;
+import com.google.common.base.Joiner;
 import com.google.gson.Gson;
 import com.ms.coco.registry.common.CocoUtils;
 
@@ -161,4 +162,7 @@ public class CenterClient {
         this.registerUrl = registerUrl;
     }
 
+    public String centerInfo() {
+        return Joiner.on("-").join(spacename, registerUrl);
+    }
 }

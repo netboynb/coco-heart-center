@@ -24,7 +24,6 @@ public class RedisLock {
     private StringRedisTemplate redisTemplate;
     private boolean fetch = false;
 
-
     public RedisLock(String lockKey, StringRedisTemplate redisTemplate) {
         this.lockKey = Utils.lockStart + lockKey;
         this.redisTemplate = redisTemplate;
@@ -32,7 +31,7 @@ public class RedisLock {
 
     /**
      * 
-     * TODO: assume that : result == true means fetch the lock.else other server fetch the lock
+     * assume that : result == true means fetch the lock.else other server fetch the lock
      *
      * @param processTime
      * @return
@@ -52,7 +51,7 @@ public class RedisLock {
 
     /**
      * 
-     * TODO: delete the key,means release the lock
+     * delete the key,means release the lock
      *
      * @throws JedisException
      */

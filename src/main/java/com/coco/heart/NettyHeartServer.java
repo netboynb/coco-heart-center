@@ -1,11 +1,8 @@
 package com.coco.heart;
 
-import javax.servlet.ServletContextListener;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.coco.heart.server.netty.HeartCenterServer;
+import com.coco.heart.common.Utils;
 import com.coco.heart.server.netty.HttpServerInitializer;
 
 import io.netty.bootstrap.ServerBootstrap;
@@ -19,16 +16,18 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
  * @version 创建时间：2016年7月8日 下午4:54:03
  * @func
  */
-public final class NettyHeartServer implements HeartCenterServer {
-    private static final Logger LOGGER = LoggerFactory.getLogger(NettyHeartServer.class);
-    private Integer port = 8082;
+public final class NettyHeartServer extends HeartCenterServer {
+    @Autowired
     private Integer masterThreadNum = 4;
+    @Autowired
     private Integer workerThreadNum = Runtime.getRuntime().availableProcessors() * 2 + 2;
-    private ServletContextListener listener;
+    // @Autowired
+    // private ServletContextListener listener;
+    @Autowired
     private HttpServerInitializer httpServerInitializer;
 
     @Override
-    public void init() {
+    public void init() throws Exception {
         LOGGER.info("start init http-netty server");
         try {
             if (httpServerInitializer == null) {
@@ -39,11 +38,11 @@ public final class NettyHeartServer implements HeartCenterServer {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
+        Utils.sysInit(dynamicConfName);
+        initNettty();
     }
 
-    @Override
-    public void start() throws Exception {
+    protected void initNettty() throws Exception {
         // Configure the server.
         EventLoopGroup bossGroup = new NioEventLoopGroup(masterThreadNum); // 1 port - 1 thread
         EventLoopGroup workerGroup = new NioEventLoopGroup(workerThreadNum);
@@ -57,45 +56,23 @@ public final class NettyHeartServer implements HeartCenterServer {
                     workerThreadNum);
             ch.closeFuture().sync();
         } finally {
-            listener.contextDestroyed(null);
+            // listener.contextDestroyed(null);
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
     }
 
     @Override
-    public void close() throws Exception {
+    public void start() throws Exception {
+        super.start();
+        // TODO something
+    }
 
+    @Override
+    public void close() throws Exception {
+        super.close();
+        // TODO something
     }
 
     public NettyHeartServer() {}
-
-    public NettyHeartServer(int port) {
-        this.port = port;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public Integer getMasterThreadNum() {
-        return masterThreadNum;
-    }
-
-    public void setMasterThreadNum(Integer masterThreadNum) {
-        this.masterThreadNum = masterThreadNum;
-    }
-
-    public Integer getWorkerThreadNum() {
-        return workerThreadNum;
-    }
-
-    public void setWorkerThreadNum(Integer workerThreadNum) {
-        this.workerThreadNum = workerThreadNum;
-    }
-
 }

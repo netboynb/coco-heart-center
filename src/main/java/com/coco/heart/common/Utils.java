@@ -1,5 +1,8 @@
 package com.coco.heart.common;
 
+import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
+
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.curator.framework.CuratorFramework;
@@ -7,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.coco.heart.entry.PingEntry;
+import com.coco.utils.web.Proto;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
@@ -24,6 +28,11 @@ import com.netflix.config.DynamicStringProperty;
 import com.netflix.config.FixedDelayPollingScheduler;
 import com.netflix.config.PolledConfigurationSource;
 import com.netflix.config.sources.URLConfigurationSource;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
+import io.netty.handler.codec.http.HttpResponseStatus;
 
 /**
  * @author wanglin/netboy
@@ -83,6 +92,7 @@ public class Utils {
         ConfigurationManager.install(configuration);
         // ConfigJMXManager.registerConfigMbean(configuration);
     }
+
     public static String buildPath(String... pathName) {
         return Joiner.on("/").skipNulls().join(pathName);
     }
@@ -140,4 +150,17 @@ public class Utils {
         return result;
     }
 
+    public static DefaultFullHttpResponse buildResponse(Proto result, int status) {
+        byte[] resultStr = Utils.gson.toJson(result).getBytes(StandardCharsets.UTF_8);
+        int length = resultStr.length;
+        ByteBuf byteBuf = Unpooled.wrappedBuffer(resultStr);
+        DefaultFullHttpResponse response =
+                new DefaultFullHttpResponse(HTTP_1_1, HttpResponseStatus.valueOf(status), byteBuf);
+        response.headers().add("Access-Control-Allow-Origin", "*"); // 允许跨域
+        response.headers().add("pragma", "no-cache");
+        response.headers().add("cache-control", "no-cache");
+        response.headers().add("Content-Type", "application/json; charset=UTF-8");
+        response.headers().add("Content-Length", length);
+        return response;
+    }
 }

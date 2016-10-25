@@ -1,5 +1,7 @@
 package com.coco.heart.server.netty;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -14,7 +16,8 @@ import io.netty.handler.stream.ChunkedWriteHandler;
  * @func
  */
 public class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
-
+    @Autowired
+    private HttpServerHandler httpServerHandler;
     public HttpServerInitializer() {}
 
     public void init() {}
@@ -26,6 +29,6 @@ public class HttpServerInitializer extends ChannelInitializer<SocketChannel> {
         cp.addLast("aggregator", new HttpObjectAggregator(65536));
         cp.addLast("encoder", new HttpResponseEncoder());
         cp.addLast("chunkedWriter", new ChunkedWriteHandler());
-        cp.addLast("handler", new HttpServerHandler());
+        cp.addLast("handler", httpServerHandler);
     }
 }

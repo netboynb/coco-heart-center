@@ -5,8 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import com.coco.heart.server.netty.HeartCenterServer;
-
 /**
  * @author wanglin/netboy
  * @version 创建时间：2016年3月25日 下午3:45:37

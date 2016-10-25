@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.coco.heart.common.Utils;
 import com.coco.heart.domain.HeartRequest;
 import com.coco.heart.domain.HeartResponse;
 import com.coco.heart.handler.DispatchHandler;
@@ -54,12 +55,12 @@ public class HttpServerHandler extends SimpleChannelInboundHandler<FullHttpReque
             httpResponse = heartResponse.getResponse();
             ctx.writeAndFlush(httpResponse);
             LOGGER.debug("request:{},info={}", id, heartRequest);
-            return;
+        } else {
+            // other request type
+            result = Protos.InvalidRequest("only support GET");
+            httpResponse = Utils.buildResponse(result, status);
+            ctx.writeAndFlush(httpResponse);
         }
-        // other request type
-        result = Protos.InvalidRequest("just support GET");
-        httpResponse = buildResponse(result, status);
-        ctx.writeAndFlush(httpResponse);
     }
 
 

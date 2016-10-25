@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -27,6 +28,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
 */
 public class PayloadHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(PayloadHandler.class);
+    @Autowired
     private HeartCore heartCore;
 
     public PayloadHandler(HeartCore heartCore) {
@@ -34,6 +36,14 @@ public class PayloadHandler {
     }
 
     public PayloadHandler() {
+    }
+
+    public void init() {
+        heartCore.init();
+    }
+
+    public void close() {
+        heartCore.close();
     }
 
     public Proto parsePayload(String payload) {
@@ -105,6 +115,10 @@ public class PayloadHandler {
         return heartCore.removeBlackList(list);
     }
 
+    public void addBlackList(List<PingEntry> list) {
+        heartCore.addBlackList(list);
+    }
+
     public HeartCore getHeartCore() {
         return heartCore;
     }
@@ -112,5 +126,4 @@ public class PayloadHandler {
     public void setHeartCore(HeartCore heartCore) {
         this.heartCore = heartCore;
     }
-
 }
