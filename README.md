@@ -1,5 +1,8 @@
 # coco-heart-center
 the heart center for soa-server-cluster
+
+![image](https://github.com/netboynb/coco-heart-center/blob/master/heart-center-framework.jpeg)
+
 ## 1 
    soa-server-cluster's node start,connect the zookeeper cluster,and fetch the heart-center-cluster's host list
    
@@ -19,4 +22,4 @@ fetch the lock,it will update the soa-node into unavailable, the soa-server-clus
 ## 6 
    when the soa-server-node recover，it will schedule send ping info,the heart-center-cluster receive the info,it will remove the soa-node from blacklist, update the soa-node's state into avaiable on the zookeeper, send the info to brothers node ,remove the node from blackList
 
- ![image](https://github.com/netboynb/coco-heart-center/blob/master/heart-center-framework.jpeg)
+ 
