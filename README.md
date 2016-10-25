@@ -1,5 +1,5 @@
 # coco-heart-center
-the heart center for coco
+the heart center for soa-server-cluster
 ## 1 
    soa-server-cluster's node start,connect the zookeeper cluster,and fetch the heart-center-cluster's host list
    
