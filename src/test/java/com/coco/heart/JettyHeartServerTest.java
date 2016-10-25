@@ -19,12 +19,16 @@ public class JettyHeartServerTest {
                 try {
                     jettyServer2.close();
                 } catch (Exception e) {
-                    LOGGER.error("run main stop error!", e);
+                    e.printStackTrace();
                 }
             }
 
         });
-        jettyServer2.start();
+        try {
+            jettyServer2.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
